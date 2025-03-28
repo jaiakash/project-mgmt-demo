@@ -26,24 +26,14 @@ const Sidebar = () => {
       tooltip: 'Dashboard'
     },
     {
-      icon: <BsCalendar3 size={20} />,
-      path: '/calendar',
-      tooltip: 'Calendar'
-    },
-    {
       icon: <BsPeople size={22} />,
-      path: '/team',
+      path: '/overview',
       tooltip: 'Team'
     },
     {
       icon: <BiPieChartAlt size={22} />,
       path: '/analytics',
       tooltip: 'Analytics'
-    },
-    {
-      icon: <IoAddOutline size={22} />,
-      path: '/create',
-      tooltip: 'Create'
     },
   ];
 
@@ -61,10 +51,10 @@ const Sidebar = () => {
               }`}
           >
             {item.icon}
-            <span className="absolute left-full ml-2 bg-gray-800 text-white text-xs px-2 py-1 rounded 
-              opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            <div className="absolute left-full ml-2 bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg 
+              opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
               {item.tooltip}
-            </span>
+            </div>
           </Link>
         ))}
       </div>
@@ -76,10 +66,10 @@ const Sidebar = () => {
             hover:bg-white/10 hover:text-white transition-all duration-200 relative"
         >
           <AiOutlineSetting size={22} />
-          <span className="absolute left-full ml-2 bg-gray-800 text-white text-xs px-2 py-1 rounded 
-            opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          <div className="absolute left-full ml-2 bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg 
+            opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
             Settings
-          </span>
+          </div>
         </Link>
         <button
           className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 
