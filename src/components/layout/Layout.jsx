@@ -1,10 +1,11 @@
 import Sidebar from './Sidebar';
 
+// components/layout/Layout.jsx
 const Layout = ({ children }) => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 ml-16 p-6 bg-gray-50">
+      <main className="flex-1 ml-16 p-6 transition-all duration-200">
         <div className="max-w-7xl mx-auto">
           {children}
         </div>
