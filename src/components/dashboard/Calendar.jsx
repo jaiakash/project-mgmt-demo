@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
-const Calendar = () => {
+const Calendar = ({ onEventClick }) => {
   const [viewType, setViewType] = useState('Week');
 
   const days = [
@@ -187,6 +187,7 @@ const Calendar = () => {
                 return (
                   <div
                     key={event.id}
+                    onClick={() => onEventClick(event)}
                     className={`absolute w-[90%] left-[15%] p-2 rounded-lg ${event.color} 
                       cursor-pointer hover:shadow-md transition-shadow duration-200`}
                     style={{
