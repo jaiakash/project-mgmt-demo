@@ -87,54 +87,140 @@ const ProjectProgress = () => {
   );
 };
 
-// Revenue Section
 const RevenueSection = ({ revenueData }) => {
+  // Calculate percentage change
+  const percentageChange = 8.2;
+  const isPositive = percentageChange >= 0;
+
+  // Dynamic color classes based on positive/negative change
+  const changeColors = {
+    positive: {
+      text: 'text-emerald-600',
+      bg: 'from-emerald-50/50 to-green-50/50',
+      border: 'border-emerald-100',
+      barColor: '#10B981'
+    },
+    negative: {
+      text: 'text-rose-600',
+      bg: 'from-rose-50/50 to-red-50/50',
+      border: 'border-rose-100',
+      barColor: '#F43F5E'
+    }
+  };
+
+  const colors = isPositive ? changeColors.positive : changeColors.negative;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl p-6 shadow-sm mb-8 border border-gray-100 relative overflow-hidden"
+      className="bg-white/50 backdrop-blur-sm rounded-3xl p-8 shadow-xl 
+        shadow-gray-100/50 mb-8 border border-gray-100/50 relative overflow-hidden"
     >
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Project Revenue</h2>
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white/50" />
+      <div className={`absolute top-0 right-0 w-96 h-96 bg-gradient-to-br ${colors.bg} 
+        rounded-full filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2`} />
+
+      <div className="relative">
+        <div className="flex justify-between items-start mb-8">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold text-gray-800">Project Revenue</h2>
+              <p className="text-sm text-gray-500">Monthly revenue overview</p>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <motion.span
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                className="text-4xl font-bold text-gray-800 tracking-tight"
+              >
+                $12,856.14
+              </motion.span>
+              
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-1.5 ${colors.text} bg-gradient-to-r ${colors.bg}
+                  px-3 py-1.5 rounded-full text-sm border ${colors.border}
+                  shadow-sm transition-all duration-300`}
+              >
+                {isPositive ? (
+                  <BsArrowUpShort className="text-xl" />
+                ) : (
+                  <BsArrowDownShort className="text-xl" />
+                )}
+                <span className="font-medium">{Math.abs(percentageChange)}%</span>
+              </motion.div>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-gray-800">$12,856.14</span>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-1 text-emerald-600 bg-gradient-to-r from-emerald-50 
-              to-green-50 px-3 py-1.5 rounded-full text-sm border border-emerald-100"
+            <motion.select
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="text-sm border-2 border-gray-200 rounded-xl px-4 py-2.5 
+                bg-white shadow-sm focus:ring-2 focus:ring-gray-200 focus:border-gray-300
+                outline-none appearance-none cursor-pointer transition-all duration-200"
             >
-              <BsArrowUpShort size={20} />
-              <span>8.2%</span>
-            </motion.div>
+              <option>This Year</option>
+              <option>This Month</option>
+              <option>This Quarter</option>
+            </motion.select>
           </div>
         </div>
 
-        <motion.select
-          whileHover={{ scale: 1.02 }}
-          className="text-sm border-2 border-gray-200 rounded-xl px-4 py-2 bg-white shadow-sm"
-        >
-          <option>Year</option>
-          <option>Month</option>
-          <option>Quarter</option>
-        </motion.select>
-      </div>
-
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={revenueData} barSize={32}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Bar 
-              dataKey="value" 
-              fill={(data) => data.profit ? '#60A5FA' : '#F87171'}
-              radius={[6, 6, 0, 0]} 
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="h-80 mt-6">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={revenueData} barSize={32}>
+              <defs>
+                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={colors.barColor} stopOpacity={0.8} />
+                  <stop offset="100%" stopColor={colors.barColor} stopOpacity={0.3} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#E5E7EB"
+                strokeOpacity={0.4}
+              />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#6B7280', fontSize: 12 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#6B7280', fontSize: 12 }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                  padding: '12px'
+                }}
+              />
+              <Bar
+                dataKey="value"
+                fill="url(#barGradient)"
+                radius={[6, 6, 0, 0]}
+              >
+                {revenueData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.profit ? colors.barColor : changeColors.negative.barColor}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </motion.div>
   );

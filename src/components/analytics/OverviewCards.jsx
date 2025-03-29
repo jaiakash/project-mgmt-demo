@@ -45,7 +45,7 @@ const OverviewCards = ({ workingHoursData }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {cards.map((card, index) => (
-        <Card 
+        <Card
           key={index}
           {...card}
           delay={index * 0.1}
@@ -56,18 +56,18 @@ const OverviewCards = ({ workingHoursData }) => {
   );
 };
 
-const Card = ({ 
-  title, 
-  value, 
-  change, 
-  icon, 
-  gradient, 
+const Card = ({
+  title,
+  value,
+  change,
+  icon,
+  gradient,
   buttonGradient,
   metric,
   showTeam,
   showChart,
   delay,
-  workingHoursData 
+  workingHoursData
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -85,7 +85,7 @@ const Card = ({
       {/* Gradient Background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 
         group-hover:opacity-100 transition-opacity`} />
-      
+
       <div className="relative">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
@@ -184,24 +184,41 @@ const Card = ({
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute -top-14 left-1/2 transform -translate-x-1/2 
-              bg-white rounded-lg shadow-lg p-3 z-10 w-48"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+        bg-white/95 rounded-xl shadow-lg p-4 z-50 w-48
+        border border-gray-100/50 backdrop-blur-sm
+        hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="text-sm">
-                <div className="flex justify-between mb-1">
-                  <span className="text-gray-500">Previous:</span>
-                  <span className="font-medium text-gray-700">
-                    {typeof value === 'number' ? value - 10 : '32h'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Change:</span>
-                  <span className="font-medium text-green-600">{change}</span>
+              {/* Subtle Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent 
+        rounded-xl filter blur-xl" />
+
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="text-sm space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Previous</span>
+                    <span className="font-medium text-gray-700">
+                      {typeof value === 'number' ? value - 10 : '32h'}
+                    </span>
+                  </div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Change</span>
+                    <span className="font-medium text-green-600">{change}</span>
+                  </div>
                 </div>
               </div>
+
+              {/* Decorative Corner Dots */}
+              <div className="absolute top-2 right-2 w-1 h-1 rounded-full bg-gray-300/50" />
+              <div className="absolute top-2 left-2 w-1 h-1 rounded-full bg-gray-300/50" />
+              <div className="absolute bottom-2 right-2 w-1 h-1 rounded-full bg-gray-300/50" />
+              <div className="absolute bottom-2 left-2 w-1 h-1 rounded-full bg-gray-300/50" />
             </motion.div>
           )}
         </AnimatePresence>
