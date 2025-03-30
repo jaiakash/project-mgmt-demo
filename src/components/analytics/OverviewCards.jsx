@@ -1,4 +1,5 @@
 // src/components/analytics/OverviewCards.jsx
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import {
@@ -56,6 +57,132 @@ const OverviewCards = ({ workingHoursData }) => {
   );
 };
 
+// Add this Modal component
+const Modal = ({ isOpen, onClose, type }) => {
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        {/* Backdrop */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+        />
+
+        {/* Modal Content */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="relative bg-white rounded-2xl shadow-xl p-6 w-full max-w-md"
+        >
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
+          >
+            <svg
+              className="w-5 h-5 text-gray-500"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+
+          {/* Modal Header */}
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">
+              {type === 'team' ? 'Add New Team Member' : 'Create New Project'}
+            </h3>
+            <p className="text-gray-500 mt-1">
+              {type === 'team'
+                ? 'Invite a new member to join your team'
+                : 'Start a new project with your team'}
+            </p>
+          </div>
+
+          {/* Form Fields */}
+          <div className="space-y-4">
+            {type === 'team' ? (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="colleague@company.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Role
+                  </label>
+                  <select className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Team Member</option>
+                    <option>Team Lead</option>
+                    <option>Project Manager</option>
+                  </select>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Project Name
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    placeholder="Enter project name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    rows="3"
+                    placeholder="Brief project description"
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white
+                bg-gradient-to-r ${type === 'team' ? 'from-blue-500 to-indigo-500' : 'from-orange-500 to-rose-500'}
+                hover:opacity-90 transition-all transform active:scale-95`}
+            >
+              {type === 'team' ? 'Send Invitation' : 'Create Project'}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+};
+
 const Card = ({
   title,
   value,
@@ -70,6 +197,7 @@ const Card = ({
   workingHoursData
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <motion.div
@@ -173,12 +301,21 @@ const Card = ({
           </>
         )}
 
-        {/* Button */}
-        <button className={`mt-6 w-full py-2.5 rounded-xl text-sm font-medium text-white
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className={`mt-6 w-full py-2.5 rounded-xl text-sm font-medium text-white
           bg-gradient-to-r ${buttonGradient} hover:opacity-90
-          transition-all transform active:scale-95 focus:ring-4 focus:ring-${gradient.split('-')[1]}`}>
+          transition-all transform active:scale-95 focus:ring-4 focus:ring-${gradient.split('-')[1]}`}
+        >
           {showTeam ? 'Add New Member' : 'Add New Project'}
         </button>
+
+        {/* Modal */}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          type={showTeam ? 'team' : 'project'}
+        />
 
         {/* Hover Card */}
         <AnimatePresence>

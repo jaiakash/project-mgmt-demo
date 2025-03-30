@@ -1,6 +1,6 @@
 // src/components/analytics/ProjectSections.jsx
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
 import {
   BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -23,7 +23,6 @@ const ProjectSections = ({ revenueData, projectCategories, categoryStyles }) => 
 
 // Project Progress Section
 const ProjectProgress = () => {
-  const [selectedPhase, setSelectedPhase] = useState(null);
   const phases = ['Research', 'Design', 'Development', 'Marketing'];
   const progressBars = [
     { width: '25%', color: 'from-blue-400 to-blue-500' },
