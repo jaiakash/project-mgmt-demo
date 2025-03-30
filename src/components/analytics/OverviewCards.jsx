@@ -278,7 +278,7 @@ const Card = ({
           <>
             <div className="text-sm text-purple-600 bg-purple-50 px-2 py-1 
               rounded-full inline-block mb-4">
-              Avg. 148h/month
+              Avg. 128h/month
             </div>
             <div className="h-20">
               <ResponsiveContainer width="100%" height="100%">

@@ -7,20 +7,18 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 import { BsArrowRight, BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs';
-
-const ProjectSections = ({ revenueData, projectCategories, categoryStyles }) => {
+const ProjectSections = ({ projectCategories, categoryStyles }) => {
   return (
     <>
       <ProjectProgress />
-      <RevenueSection revenueData={revenueData} />
-      <ProjectCategories 
-        categories={projectCategories} 
-        styles={categoryStyles} 
+      <RevenueSection />
+      <ProjectCategories
+        categories={projectCategories}
+        styles={categoryStyles}
       />
     </>
   );
 };
-
 // Project Progress Section
 const ProjectProgress = () => {
   const phases = ['Research', 'Design', 'Development', 'Marketing'];
@@ -30,7 +28,6 @@ const ProjectProgress = () => {
     { width: '15%', color: 'from-pink-400 to-pink-500' },
     { width: '25%', color: 'from-orange-400 to-orange-500' }
   ];
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -55,7 +52,6 @@ const ProjectProgress = () => {
           ))}
         </div>
       </div>
-
       <div className="h-16 bg-gray-50 rounded-2xl overflow-hidden flex mb-4">
         {progressBars.map((bar, i) => (
           <motion.div
@@ -67,7 +63,6 @@ const ProjectProgress = () => {
           />
         ))}
       </div>
-
       <div className="grid grid-cols-3 gap-6">
         {['February', 'March', 'April'].map((month, i) => (
           <motion.div
@@ -86,142 +81,177 @@ const ProjectProgress = () => {
   );
 };
 
-const RevenueSection = ({ revenueData }) => {
-  // Calculate percentage change
-  const percentageChange = 8.2;
-  const isPositive = percentageChange >= 0;
+const RevenueSection = () => {
+  // Calculate current month's total revenue
+  const currentMonthRevenue = 12856.14;
+  const percentageChange = 12.5;
+  const isPositive = percentageChange > 0;
 
-  // Dynamic color classes based on positive/negative change
-  const changeColors = {
-    positive: {
-      text: 'text-emerald-600',
-      bg: 'from-emerald-50/50 to-green-50/50',
-      border: 'border-emerald-100',
-      barColor: '#10B981'
-    },
-    negative: {
-      text: 'text-rose-600',
-      bg: 'from-rose-50/50 to-red-50/50',
-      border: 'border-rose-100',
-      barColor: '#F43F5E'
-    }
+  // Generate random data with month-over-month changes
+  const revenueData = Array.from({ length: 12 }, (_, i) => {
+    const currentValue = Math.floor(Math.random() * (20000 - 8000 + 1)) + 8000;
+    const previousValue = Math.floor(Math.random() * (20000 - 8000 + 1)) + 8000;
+    const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(2);
+
+    return {
+      month: new Date(0, i).toLocaleString('default', { month: 'short' }),
+      value: currentValue,
+      previousValue: previousValue,
+      percentageChange: percentageChange
+    };
+  });
+
+  const colors = {
+    primary: "#6366F1",
+    secondary: "#818CF8",
+    success: "#34D399",
+    background: "from-indigo-500/5 to-violet-500/5",
+    border: "border-indigo-50",
+    text: "text-indigo-600",
   };
 
-  const colors = isPositive ? changeColors.positive : changeColors.negative;
+  // Custom Tooltip Component
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      const isPositive = parseFloat(data.percentageChange) > 0;
+
+      return (
+        <div className="bg-white p-4 shadow-lg rounded-xl border border-gray-100">
+          <p className="text-sm font-semibold text-gray-600 mb-2">{label}</p>
+          <p className="text-lg font-bold text-gray-800">
+            ${data.value.toLocaleString()}
+          </p>
+          <div className={`flex items-center gap-1 mt-2 ${isPositive ? 'text-emerald-500' : 'text-red-500'
+            }`}>
+            {isPositive ? (
+              <BsArrowUpShort className="text-xl" />
+            ) : (
+              <BsArrowDownShort className="text-xl" />
+            )}
+            <span className="text-sm font-medium">
+              {Math.abs(data.percentageChange)}%
+            </span>
+            <span className="text-xs text-gray-500 ml-1">vs last month</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white/50 backdrop-blur-sm rounded-3xl p-8 shadow-xl 
-        shadow-gray-100/50 mb-8 border border-gray-100/50 relative overflow-hidden"
-    >
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white/50" />
-      <div className={`absolute top-0 right-0 w-96 h-96 bg-gradient-to-br ${colors.bg} 
-        rounded-full filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2`} />
+    <div className="bg-gray-50 py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-1"
+      >
+        <div className="bg-white/80 rounded-3xl p-8 shadow-xl shadow-indigo-100/10 
+          border border-gray-100/80 backdrop-blur-xl relative overflow-hidden
+          hover:bg-white/90 transition-all duration-300">
 
-      <div className="relative">
-        <div className="flex justify-between items-start mb-8">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-gray-800">Project Revenue</h2>
-              <p className="text-sm text-gray-500">Monthly revenue overview</p>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <motion.span
-                initial={{ scale: 0.95 }}
-                animate={{ scale: 1 }}
-                className="text-4xl font-bold text-gray-800 tracking-tight"
-              >
-                $12,856.14
-              </motion.span>
-              
+          {/* Glassmorphism Effects */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-indigo-500/10 
+            to-violet-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-blue-500/10 
+            to-cyan-500/10 rounded-full blur-3xl" />
+
+          <div className="relative">
+            {/* Header Section */}
+            <div className="flex justify-between items-start mb-12">
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="space-y-2"
+                >
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 
+                    bg-clip-text text-transparent">Revenue Analytics</h2>
+                  <p className="text-gray-500">Real-time financial insights</p>
+                </motion.div>
+
+                <div className="flex items-center gap-4">
+                  <motion.span
+                    initial={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    className="text-5xl font-bold text-gray-800"
+                  >
+                    ${currentMonthRevenue.toLocaleString()}
+                  </motion.span>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50'
+                      } px-4 py-2 rounded-full text-sm font-semibold`}
+                  >
+                    {isPositive ? (
+                      <BsArrowUpShort className="text-xl" />
+                    ) : (
+                      <BsArrowDownShort className="text-xl" />
+                    )}
+                    <span>{Math.abs(percentageChange)}%</span>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Custom Filter Dropdown */}
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-1.5 ${colors.text} bg-gradient-to-r ${colors.bg}
-                  px-3 py-1.5 rounded-full text-sm border ${colors.border}
-                  shadow-sm transition-all duration-300`}
+                whileHover={{ scale: 1.02 }}
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 p-2"
               >
-                {isPositive ? (
-                  <BsArrowUpShort className="text-xl" />
-                ) : (
-                  <BsArrowDownShort className="text-xl" />
-                )}
-                <span className="font-medium">{Math.abs(percentageChange)}%</span>
+                <select className="text-sm font-medium px-4 py-2.5 rounded-xl bg-transparent
+                  outline-none appearance-none cursor-pointer min-w-[160px]">
+                  <option>Last 12 Months</option>
+                  <option>Last 30 Days</option>
+                  <option>Last Quarter</option>
+                </select>
               </motion.div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <motion.select
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="text-sm border-2 border-gray-200 rounded-xl px-4 py-2.5 
-                bg-white shadow-sm focus:ring-2 focus:ring-gray-200 focus:border-gray-300
-                outline-none appearance-none cursor-pointer transition-all duration-200"
-            >
-              <option>This Year</option>
-              <option>This Month</option>
-              <option>This Quarter</option>
-            </motion.select>
-          </div>
-        </div>
-
-        <div className="h-80 mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={revenueData} barSize={32}>
-              <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={colors.barColor} stopOpacity={0.8} />
-                  <stop offset="100%" stopColor={colors.barColor} stopOpacity={0.3} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="#E5E7EB"
-                strokeOpacity={0.4}
-              />
-              <XAxis
-                dataKey="month"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B7280', fontSize: 12 }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B7280', fontSize: 12 }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'white',
-                  border: 'none',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  padding: '12px'
-                }}
-              />
-              <Bar
-                dataKey="value"
-                fill="url(#barGradient)"
-                radius={[6, 6, 0, 0]}
-              >
-                {revenueData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.profit ? colors.barColor : changeColors.negative.barColor}
+            {/* Chart Section */}
+            <div className="h-[400px] mt-8">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={revenueData} barSize={48}>
+                  <defs>
+                    <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={colors.primary} stopOpacity={0.8} />
+                      <stop offset="100%" stopColor={colors.secondary} stopOpacity={0.3} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#f1f5f9"
                   />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                  <XAxis
+                    dataKey="month"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#64748b', fontSize: 13 }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#64748b', fontSize: 13 }}
+                    tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar
+                    dataKey="value"
+                    fill="url(#colorGradient)"
+                    radius={[8, 8, 0, 0]}
+                    cursor="pointer"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
@@ -248,10 +278,9 @@ const ProjectCategories = ({ categories, styles }) => {
           <BsArrowRight className="group-hover:translate-x-1 transition-transform" />
         </motion.button>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.map((category, index) => (
-          <CategoryCard 
+          <CategoryCard
             key={index}
             category={category}
             style={styles[index]}
@@ -259,13 +288,11 @@ const ProjectCategories = ({ categories, styles }) => {
           />
         ))}
       </div>
-
       <QuickStats />
       <CategoryTags />
     </motion.div>
   );
 };
-
 // Helper Components
 const CategoryCard = ({ category, style, delay }) => {
   return (
@@ -291,16 +318,13 @@ const CategoryCard = ({ category, style, delay }) => {
             {category.progress}%
           </span>
         </div>
-        
         <h3 className="font-semibold text-gray-800 mb-1">{category.name}</h3>
         <p className="text-sm text-gray-600 mb-4">{category.description}</p>
-        
         <div className="space-y-3">
           <div className="flex justify-between items-center text-sm">
             <span className="text-gray-600">Active projects</span>
             <span className="font-medium text-gray-800">{category.activeProjects}</span>
           </div>
-          
           <div className="h-1.5 bg-white/50 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
@@ -314,7 +338,6 @@ const CategoryCard = ({ category, style, delay }) => {
     </motion.div>
   );
 };
-
 const QuickStats = () => {
   const stats = [
     { label: 'Total Tasks', value: '234', icon: '📋' },
@@ -322,7 +345,6 @@ const QuickStats = () => {
     { label: 'Completed', value: '189', icon: '✅' },
     { label: 'Success Rate', value: '94%', icon: '📈' }
   ];
-
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
       {stats.map((stat, index) => (
@@ -341,10 +363,8 @@ const QuickStats = () => {
     </div>
   );
 };
-
 const CategoryTags = () => {
   const tags = ['#Research', '#Strategy', '#Operations', '#Design', '#Development'];
-
   return (
     <div className="flex flex-wrap gap-3 mt-8">
       {tags.map((tag, index) => (
@@ -360,5 +380,4 @@ const CategoryTags = () => {
     </div>
   );
 };
-
 export default ProjectSections;
