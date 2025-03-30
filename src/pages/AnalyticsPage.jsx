@@ -1,4 +1,5 @@
 // src/pages/AnalyticsPage.jsx
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Header from '../components/analytics/Header';
 import OverviewCards from '../components/analytics/OverviewCards';
