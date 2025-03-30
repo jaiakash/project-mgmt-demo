@@ -44,18 +44,18 @@ const Comments = () => {
 
       <div className="space-y-4">
         {comments.map((comment) => (
-          <div 
-            key={comment.id} 
+          <div
+            key={comment.id}
             className={`relative p-4 rounded-xl transition-all duration-200 
-              ${comment.unread 
-                ? 'bg-blue-50/50 hover:bg-blue-50' 
+              ${comment.unread
+                ? 'bg-blue-50/50 hover:bg-blue-50'
                 : 'hover:bg-gray-50'
               }`}
           >
             <div className="flex items-start gap-3">
               <div className="relative">
-                <img 
-                  src={comment.user.avatar} 
+                <img
+                  src={comment.user.avatar}
                   alt={comment.user.name}
                   className="w-10 h-10 rounded-full ring-2 ring-white"
                 />
@@ -63,7 +63,7 @@ const Comments = () => {
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />
                 )}
               </div>
-              
+
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-[#1a1f36]">{comment.user.name}</span>
@@ -95,7 +95,7 @@ const Comments = () => {
                      focus:border-blue-300 focus:ring-2 focus:ring-blue-100 
                      outline-none transition-all duration-200"
           />
-          <button 
+          <button
             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 
                      text-blue-500 hover:text-blue-600 transition-colors"
           >

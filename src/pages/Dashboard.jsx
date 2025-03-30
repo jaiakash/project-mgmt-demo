@@ -23,7 +23,7 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <main className="flex-1 ml-16 p-6 transition-all duration-200">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-10xl mx-auto">
           <Welcome />
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-8">
