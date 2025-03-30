@@ -91,6 +91,54 @@ const TeamPage = () => {
       email: "james.m@company.com",
       department: "Digital",
       joinedDate: "2023-04-10"
+    },
+    {
+      id: 5,
+      name: "Sophia L.",
+      role: "UX Designer",
+      avatar: "https://ui-avatars.com/api/?name=Sophia+L&background=random",
+      status: 'online',
+      tasks: 15,
+      projects: 6,
+      email: "sophia.l@company.com",
+      department: "Design",
+      joinedDate: "2023-05-12"
+    },
+    {
+      id: 6,
+      name: "Liam T.",
+      role: "Backend Developer",
+      avatar: "https://ui-avatars.com/api/?name=Liam+T&background=random",
+      status: 'busy',
+      tasks: 20,
+      projects: 7,
+      email: "liam.t@company.com",
+      department: "Engineering",
+      joinedDate: "2023-06-01"
+    },
+    {
+      id: 7,
+      name: "Olivia P.",
+      role: "Marketing Specialist",
+      avatar: "https://ui-avatars.com/api/?name=Olivia+P&background=random",
+      status: 'online',
+      tasks: 18,
+      projects: 5,
+      email: "olivia.p@company.com",
+      department: "Marketing",
+      joinedDate: "2023-07-15"
+    },
+    {
+      id: 8,
+      name: "Ethan K.",
+      role: "Data Analyst",
+      avatar: "https://ui-avatars.com/api/?name=Ethan+K&background=random",
+      status: 'offline',
+      tasks: 10,
+      projects: 4,
+      email: "ethan.k@company.com",
+      department: "Analytics",
+      joinedDate: "2023-08-20"
     }
   ];
 
