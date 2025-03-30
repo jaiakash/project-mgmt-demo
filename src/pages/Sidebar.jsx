@@ -27,7 +27,7 @@ const Sidebar = () => {
     },
     {
       icon: <BsPeople size={22} />,
-      path: '/overview',
+      path: '/team',
       tooltip: 'Team'
     },
     {
@@ -35,6 +35,12 @@ const Sidebar = () => {
       path: '/analytics',
       tooltip: 'Analytics'
     },
+    {
+
+      icon: <AiOutlineSetting size={22} />,
+      path: '/settings',
+      tooltip: 'Settings'
+    }
   ];
 
   return (
@@ -60,17 +66,6 @@ const Sidebar = () => {
       </div>
 
       <div className="mt-auto flex flex-col gap-4">
-        <Link
-          to="/settings"
-          className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 
-            hover:bg-white/10 hover:text-white transition-all duration-200 relative"
-        >
-          <AiOutlineSetting size={22} />
-          <div className="absolute left-full ml-2 bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg 
-            opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-            Settings
-          </div>
-        </Link>
         <button
           className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 
             hover:bg-white/10 hover:text-white transition-all duration-200"

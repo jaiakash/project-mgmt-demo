@@ -4,6 +4,7 @@ import Sidebar from './pages/Sidebar';
 import Dashboard from './pages/Dashboard';
 import AnalyticsPage from './pages/AnalyticsPage';
 import TeamPage from './pages/Team';
+import Settings from './pages/Settings';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/overview" element={<TeamPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>

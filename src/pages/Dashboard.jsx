@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import CreateTaskModal from '../components/modals/CreateTaskModal';
-import EventDetailsModal from '../components/modals/EventDetailsModal';
+import CreateTaskModal from '../components/dashboard/CreateTaskModal';
+import EventDetailsModal from '../components/dashboard/EventDetailsModal';
 import Welcome from '../components/dashboard/Welcome';
 import Calendar from '../components/dashboard/Calendar';
 import UrgentTasks from '../components/dashboard/UrgentTasks';
