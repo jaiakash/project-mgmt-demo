@@ -3,20 +3,22 @@ import { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  BsCircle, BsCheckCircleFill, BsThreeDots, BsClock, BsPeople,
-  BsBarChart, BsLink45Deg, BsCalendarEvent
+  BsCircle, BsCheckCircleFill, BsBarChart
 } from 'react-icons/bs';
 import {
-  IoAdd, IoFlameOutline, IoTimeOutline, IoFlagOutline,
+  IoAdd, IoTimeOutline, IoFlagOutline,
   IoDocumentTextOutline, IoPeopleOutline
 } from 'react-icons/io5';
 import {
   HiOutlineTrash, HiOutlinePencil, HiOutlineTag,
   HiOutlineChatAlt, HiOutlinePaperClip
 } from 'react-icons/hi';
+import AddTaskModal from './AddTaskModal';
 
-const UrgentTasks = ({ onAddTask }) => {
-  const tasks = [
+const UrgentTasks = () => {
+  const [hoveredTask, setHoveredTask] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tasks, setTasks] = useState([
     {
       id: 1,
       title: "Finish monthly reporting",
@@ -76,9 +78,37 @@ const UrgentTasks = ({ onAddTask }) => {
       color: "green",
       icon: <IoPeopleOutline />
     }
-  ];
+  ]);
 
-  const [hoveredTask, setHoveredTask] = useState(null);
+  const handleAddTask = (newTask) => {
+    const task = {
+      id: tasks.length + 1,
+      ...newTask,
+      completed: false,
+      assignees: [],
+      comments: 0,
+      attachments: 0,
+      progress: 0,
+      color: "blue",
+      icon: <IoDocumentTextOutline />
+    };
+    setTasks([...tasks, task]);
+  };
+
+  const handleCompleteTask = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const handleDeleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  const handleEditTask = (taskId) => {
+    // Implement edit functionality
+    console.log('Edit task:', taskId);
+  };
 
   const getPriorityStyle = (priority) => {
     const styles = {
@@ -115,173 +145,197 @@ const UrgentTasks = ({ onAddTask }) => {
       {tag}
     </motion.span>
   );
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/20"
-    >
-      {/* ... Header section remains the same ... */}
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/20"
+      >
+        <motion.div layout className="space-y-4">
+          <AnimatePresence>
+            {tasks.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                onHoverStart={() => setHoveredTask(task.id)}
+                onHoverEnd={() => setHoveredTask(null)}
+                className="group relative p-6 rounded-2xl border border-gray-100 hover:shadow-lg 
+                  hover:shadow-gray-100/50 transition-all duration-300"
+              >
+                {/* Priority indicator */}
+                <div className={`absolute top-0 left-0 w-full h-1 rounded-t-2xl 
+                  bg-gradient-to-r ${getPriorityStyle(task.priority).color} opacity-50`}
+                />
 
-      {/* Tasks List */}
-      <motion.div layout className="space-y-4">
-        <AnimatePresence>
-          {tasks.map((task) => (
-            <motion.div
-              key={task.id}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              onHoverStart={() => setHoveredTask(task.id)}
-              onHoverEnd={() => setHoveredTask(null)}
-              className="group relative p-6 rounded-2xl border border-gray-100 hover:shadow-lg 
-                hover:shadow-gray-100/50 transition-all duration-300"
-            >
-              {/* Priority indicator */}
-              <div className={`absolute top-0 left-0 w-full h-1 rounded-t-2xl 
-                bg-gradient-to-r ${getPriorityStyle(task.priority).color} opacity-50`}
-              />
+                <div className="flex items-start gap-4">
+                  {/* Checkbox */}
+                  <motion.button
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCompleteTask(task.id);
+                    }}
+                    className={`mt-1 transition-colors duration-300 
+                      ${task.completed ? 'text-green-500' : 'text-gray-300 hover:text-gray-400'}`}
+                  >
+                    {task.completed ? <BsCheckCircleFill size={24} /> : <BsCircle size={24} />}
+                  </motion.button>
 
-              <div className="flex items-start gap-4">
-                {/* Checkbox */}
-                <motion.button
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`mt-1 transition-colors duration-300 
-                    ${task.completed ? 'text-green-500' : 'text-gray-300 hover:text-gray-400'}`}
-                >
-                  {task.completed ? <BsCheckCircleFill size={24} /> : <BsCircle size={24} />}
-                </motion.button>
-
-                {/* Task Content */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <h3 className={`font-medium text-lg transition-colors duration-200 
-                        ${task.completed ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
-                        {task.title}
-                      </h3>
-                      <p className="text-gray-500 text-sm">{task.description}</p>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: hoveredTask === task.id ? 1 : 0 }}
-                      className="flex items-center gap-2"
-                    >
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-blue-500"
-                      >
-                        <HiOutlinePencil size={18} />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-red-500"
-                      >
-                        <HiOutlineTrash size={18} />
-                      </motion.button>
-                    </motion.div>
-                  </div>
-
-                  {/* Task Details */}
-                  <div className="mt-4 flex items-center gap-6">
-                    {/* Project & Category */}
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className={`w-2 h-2 rounded-full bg-${task.color}-500`} />
-                      <span className="text-gray-600">{task.project}</span>
-                      <span className="text-gray-300">•</span>
-                      <span className="text-gray-600">{task.category}</span>
-                    </div>
-
-                    {/* Deadline */}
-                    <div className="flex items-center gap-2 text-sm">
-                      <IoTimeOutline className="text-gray-400" />
-                      <span className="text-gray-600">{task.deadline}</span>
-                    </div>
-
-                    {/* Priority */}
-                    <div className={`flex items-center gap-1 px-2 py-1 rounded-lg ${getPriorityStyle(task.priority).bg}`}>
-                      {getPriorityStyle(task.priority).icon}
-                      <span className={`text-sm font-medium ${getPriorityStyle(task.priority).text}`}>
-                        {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="mt-4 flex items-center gap-2">
-                    <HiOutlineTag className="text-gray-400" />
-                    {task.tags.map((tag, index) => (
-                      <TaskTag key={index} tag={tag} />
-                    ))}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="mt-4 flex items-center justify-between">
-                    {/* Assignees */}
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-2">
-                        {task.assignees.map((assignee) => (
-                          <motion.img
-                            key={assignee.id}
-                            whileHover={{ scale: 1.2, zIndex: 1 }}
-                            src={assignee.avatar}
-                            alt={assignee.name}
-                            className="w-8 h-8 rounded-full border-2 border-white"
-                            title={assignee.name}
-                          />
-                        ))}
+                  {/* Task Content */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <h3 className={`font-medium text-lg transition-colors duration-200 
+                          ${task.completed ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                          {task.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm">{task.description}</p>
                       </div>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+
+                      {/* Quick Actions */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: hoveredTask === task.id ? 1 : 0 }}
+                        className="flex items-center gap-2"
                       >
-                        <IoAdd size={16} className="text-gray-600" />
-                      </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditTask(task.id);
+                          }}
+                          className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-blue-500"
+                        >
+                          <HiOutlinePencil size={18} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTask(task.id);
+                          }}
+                          className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-red-500"
+                        >
+                          <HiOutlineTrash size={18} />
+                        </motion.button>
+                      </motion.div>
                     </div>
 
-                    {/* Meta Information */}
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <HiOutlineChatAlt />
-                        <span>{task.comments}</span>
+                    {/* Task Details */}
+                    <div className="mt-4 flex items-center gap-6">
+                      {/* Project & Category */}
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className={`w-2 h-2 rounded-full bg-${task.color}-500`} />
+                        <span className="text-gray-600">{task.project}</span>
+                        <span className="text-gray-300">•</span>
+                        <span className="text-gray-600">{task.category}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <HiOutlinePaperClip />
-                        <span>{task.attachments}</span>
+
+                      {/* Deadline */}
+                      <div className="flex items-center gap-2 text-sm">
+                        <IoTimeOutline className="text-gray-400" />
+                        <span className="text-gray-600">{task.deadline}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <BsBarChart />
-                        <span>{task.progress}%</span>
+
+                      {/* Priority */}
+                      <div className={`flex items-center gap-1 px-2 py-1 rounded-lg ${getPriorityStyle(task.priority).bg}`}>
+                        {getPriorityStyle(task.priority).icon}
+                        <span className={`text-sm font-medium ${getPriorityStyle(task.priority).text}`}>
+                          {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="mt-4 flex items-center gap-2">
+                      <HiOutlineTag className="text-gray-400" />
+                      {task.tags.map((tag, index) => (
+                        <TaskTag key={index} tag={tag} />
+                      ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-4 flex items-center justify-between">
+                      {/* Assignees */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex -space-x-2">
+                          {task.assignees.map((assignee) => (
+                            <motion.img
+                              key={assignee.id}
+                              whileHover={{ scale: 1.2, zIndex: 1 }}
+                              src={assignee.avatar}
+                              alt={assignee.name}
+                              className="w-8 h-8 rounded-full border-2 border-white"
+                              title={assignee.name}
+                            />
+                          ))}
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('Add assignee to task:', task.id);
+                          }}
+                          className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+                        >
+                          <IoAdd size={16} className="text-gray-600" />
+                        </motion.button>
+                      </div>
+
+                      {/* Meta Information */}
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <HiOutlineChatAlt />
+                          <span>{task.comments}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <HiOutlinePaperClip />
+                          <span>{task.attachments}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <BsBarChart />
+                          <span>{task.progress}%</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
-        {/* Add Task Button */}
-        <motion.button
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          onClick={onAddTask}
-          className="w-full py-4 rounded-2xl border-2 border-dashed border-gray-200 
-            text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50
-            transition-all duration-300 flex items-center justify-center gap-2"
-        >
-          <IoAdd size={20} />
-          <span>Add new task</span>
-        </motion.button>
+          {/* Add Task Button */}
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
+            className="w-full py-4 rounded-2xl border-2 border-dashed border-gray-200 
+              text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50
+              transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <IoAdd size={20} />
+            <span>Add new task</span>
+          </motion.button>
+        </motion.div>
       </motion.div>
-    </motion.div>
+
+      {/* Add Task Modal */}
+      <AddTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddTask={handleAddTask}
+      />
+    </>
   );
 };
 

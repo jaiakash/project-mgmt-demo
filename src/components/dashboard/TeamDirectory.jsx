@@ -83,6 +83,7 @@ const TeamDirectory = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-4 py-2 flex items-center gap-2 text-indigo-500 hover:bg-indigo-50 rounded-xl transition-colors"
+              onClick={() => window.location.href = '/team'}
             >
               <HiOutlineViewGrid className="text-lg" />
               <span>View all</span>
@@ -106,7 +107,7 @@ const TeamDirectory = () => {
               >
                 <div className="flex items-start gap-4">
                   {/* Avatar */}
-                  <motion.div 
+                  <motion.div
                     className="relative"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -116,7 +117,7 @@ const TeamDirectory = () => {
                     </div>
                     <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white
                       ${member.status === 'online' ? 'bg-green-500' : 'bg-gray-300'}
-                      ring-2 ${member.status === 'online' ? 'ring-green-100' : 'ring-gray-100'}`} 
+                      ring-2 ${member.status === 'online' ? 'ring-green-100' : 'ring-gray-100'}`}
                     />
                   </motion.div>
 
@@ -127,7 +128,7 @@ const TeamDirectory = () => {
                         <h3 className="font-semibold text-gray-900">{member.name}</h3>
                         <p className="text-sm text-gray-500">{member.role}</p>
                       </div>
-                      
+
                       {/* Quick Actions */}
                       <motion.div
                         initial={{ opacity: 0 }}
